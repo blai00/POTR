@@ -163,22 +163,27 @@ class PackageCatalog extends Component{
         let action_button_header='';
         let packageList = this.state.listOfPackages.map((packages,index) => {
             if(localStorage.checkAdmin === 'true'){
-                action_button_header = <th>Actions</th>
-                action_button = <td><button onClick={this.editPackage} 	id={packages._id} value={index}>Edit</button>
-                                        <button onClick={this.deletePackage} 	id={packages._id} value={index}>Delete</button> </td>
+                action_button_header = <th scope="col">Actions</th>
+                action_button = <td data-label="Actions">
+                                <a onClick={this.deletePackage} 	id={packages._id} value={index} title='delete'>
+                                <span className="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+                                </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a onClick={this.editPackage} 	id={packages._id} value={index} title='edit'>
+<span className="glyphicon glyphicon-edit" aria-hidden="true"></span>
+</a>
+                                </td>
                     return(
                         <tr key={index}>
                                         {action_button}
-                                        <td><Link to={`/packageDetails/${packages._id}`}>Show</Link></td>
-                                        <td>{packages.name}</td>
-                                        <td>{packages.value}</td>
-                                        <td>{packages.amount}</td>
-                                        <td>{packages.bid_increment}</td>
-                                        <td>{}</td>
-                                        <td>{packages._id}</td>
-                                        <td>{packages._category}</td>
-                                        <td>{packages.description}</td>
-                                        <td>{packages._items.map((item,index)=>{ 	return <li key={index} >{item.name}</li>}) } </td>
+                                        <td data-label="Name"><Link to={`/packageDetails/${packages._id}`}>{packages.name}</Link></td>
+                                        <td data-label="Value">{packages.value}</td>
+                                        <td data-label="Bid">{packages.amount}</td>
+                                        <td data-label="Increment">{packages.bid_increment}</td>
+                                        <td data-label="Current Bid">{}--</td>
+                                        <td data-label="Number">{packages._id}</td>
+                                        <td data-label="Category">{packages._category}</td>
+                                        <td data-label="Description">{packages.description}</td>
+                                        <td data-label="Items in package">{packages._items.map((item,index)=>{ 	return <li key={index} >{item.name}</li>}) } </td>
                         </tr>
                  )}else {
                         return(
@@ -207,25 +212,25 @@ class PackageCatalog extends Component{
         return(
 <div className="container"><div className="row">
         <div>
+        <h1 id="h1">Packages/Bids</h1>
             <div>
                 <SearchBar handleChange={this.handleChange} handleNewLetter={this.handleNewLetter}
                                     categories={categories} selectValue={this.state.selectValue}/>
             </div>
-            <div className='table-responsive table-container'>
+            <div className='table-responsi_ve table-co_ntainer package-table'>
                     <table className='table table-striped table-bordered'>
                         <thead>
                             <tr>
                                 {action_button_header}
-                                <th>Details</th>
-                                <th>Package Name</th>
-                                <th>Package Value</th>
-                                <th>Starting Bid</th>
-                                <th>Increments</th>
-                                <th>Current Bid</th>
-                                <th>Package Number</th>
-                                <th>Category </th>
-                                <th>Item Description</th>
-                                <th>Items in Package</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Value</th>
+                                <th scope="col">Bid</th>
+                                <th scope="col">Increments</th>
+                                <th scope="col">Current Bid</th>
+                                <th scope="col">Number</th>
+                                <th scope="col">Category </th>
+                                <th scope="col">Item Description</th>
+                                <th scope="col">Items in Package</th>
 
                             </tr>
                         </thead>

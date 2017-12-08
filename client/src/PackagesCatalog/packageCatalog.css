@@ -22,3 +22,100 @@ img.card_img {
   white-space: nowrap;
   text-overflow: ellipsis
 }
+
+.package-table table .glyphicon {
+  font-size: 1.5em;
+}
+.package-table, .table {
+  overflow-x:auto!important;
+  word-wrap: break-word!important
+}
+.package-table table td:first-child {
+  min-width: 100px;
+}
+  /*.package-table table td:first-child a:nth-child(2) {
+    float:right;padding-right: 10px;
+  }*/
+  /*.package-table table td:nth-child(8) {
+    max-width: 20px
+  }*/
+
+h1#h1 {
+  text-align:left;
+}
+
+
+/**/
+/**/
+/**/
+/**/
+
+.package-table  table {
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  table-layout: fixed;
+}
+.package-table table caption {
+  font-size: 1.5em;
+  margin: .5em 0 .75em;
+}
+.package-table table tr {
+  background: #f8f8f8;
+  border: 1px solid #ddd;
+  padding: .15em;
+}
+.package-table table th,
+.package-table table td {
+  padding: .125em;
+  text-align: center;
+}
+.package-table table th {
+  font-size: .85em;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+@media screen and (max-width: 600px) {
+  .package-table table {
+    border: 0;
+  }
+  .package-table table caption {
+    font-size: 1.3em;
+  }
+  .package-table table thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+  .package-table table tr {
+    border-bottom: 3px solid #ddd;
+    display: block;
+    margin-bottom: .625em;
+  }
+  .package-table table td {
+    border-bottom: 1px solid #ddd;
+    display: block;
+    font-size: .8em;
+    text-align: right;
+  }
+  .package-table table td:before {
+    /*
+    * aria-label has no advantage, it won't be read inside a table
+    content: attr(aria-label);
+    */
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  .package-table table td:last-child {
+    border-bottom: 0;
+  }
+}
