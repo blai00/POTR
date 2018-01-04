@@ -20,7 +20,7 @@ class Menu extends React.Component{
           data: {}
       }).then((response) => {
          localStorage.clear();
-          
+
       }).catch((err) =>{
           console.log(err);
       })
@@ -42,7 +42,7 @@ class Menu extends React.Component{
           console.log(err);
       })
     }
-  
+
     componentWillMount(){
         this.loggedin();
     }
@@ -76,21 +76,20 @@ class Menu extends React.Component{
             htmlAdminPackage = <li><Link to='/packages/new'>Package</Link></li>
         }
         return(
-            <nav className="navbar navbar-inverse">
-                <div className="container-fluid">
+<div className="navBg" id="nav">
+<div className="container navbar-inverse"><div className="row">
+
+            <nav className="">
                     <div className="navbar-header">
-                        <button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#myNavbar" aria-expanded="false">
                             <span className="icon-bar"></span>
                             <span className="icon-bar"></span>
                             <span className="icon-bar"></span>
                         </button>
-                        <a className="navbar-brand" href="/">VMC POTR</a>
+                        <Link to='/' className="navbar-brand" >VMC POTR</Link>
                     </div>
                     <div className="collapse navbar-collapse" id="myNavbar">
                         <ul className="nav navbar-nav">
-                            <li>
-                                <Link to='/'>Home</Link>
-                            </li>
                             {htmlAdminItems}
                             <li>
                                 <Link to='/items'>Catalog</Link>
@@ -105,8 +104,10 @@ class Menu extends React.Component{
                             {htmlLogCode}
                         </ul>
                     </div>
-                </div>
-          </nav>
+              </nav>
+
+</div></div>
+</div>
         )
     }
 }

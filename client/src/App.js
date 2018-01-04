@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import {BrowserRouter, Route} from 'react-router-dom';
+//import {Route, Router, browserHistory} from 'react-router';
 import Home from "./Welcome/home.js";
 import Menu from './NavBar/menu.js';
 import ItemEntryAdmin from './Admin/itemEntryAdmin.js';

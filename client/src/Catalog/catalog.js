@@ -7,7 +7,8 @@ class Catalog extends Component{
         super(props);
         this.state = {
             listOfItems: [],
-            admin: Boolean
+            admin: Boolean,
+            title: "Catalog"
         }
     }
 
@@ -15,22 +16,10 @@ class Catalog extends Component{
         Axios.get("/api/items")
         .then((result) =>{
             this.setState({
-                listOfItems: result.data
-            })
-        }).catch((err) =>{
-            console.log(err);
-        })
-
-        //loading user information:
-        //if the user's name is administrator then they have admin access
-        Axios.get("/api/which_user_is_logged_in")
-        .then((result) =>{
-            console.log("if true they are admin, if false they are not: ", result.data.admin);
-            this.setState({
+                listOfItems: result.data.listOfItems,
                 admin: result.data.admin
             })
-        })
-        .catch((err) =>{
+        }).catch((err) =>{
             console.log(err);
         })
     }
@@ -71,10 +60,10 @@ editItem = (e) =>{
             }
             if (item.value === 0){
               item.value = "Priceless"
-            } 
-            
-          
-          
+            }
+
+
+
 
             return(
                 <tr key={index}>
@@ -90,6 +79,8 @@ editItem = (e) =>{
             )
         })
         return(
+<div className="container"><div className="row">
+            <h1 className="h1">{this.state.title}</h1>
             <div className='table-responsive table-container'>
                 <table className='table table-striped table-bordered'>
                     <thead>
@@ -109,6 +100,7 @@ editItem = (e) =>{
                     </tbody>
                 </table>
             </div>
+</div></div>
         )
     }
 }

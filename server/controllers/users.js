@@ -47,10 +47,6 @@ function UsersController(){
                   ["zip", 5, "zip code"],
                   ["phoneNumber", 10, "phone number"],
                   ["email", 5, "email address"],
-									["creditCard", 15, "credit card number"],
-									["ccMonth", 2, "credit card expiration month"],
-									["ccYear", 2, "credit card expiration year"],
-									["cvv", 3, "credit card security code"],
                   ["userName", 5, "user name"],
                   ["password", 6, "password"]
 								];
@@ -62,7 +58,16 @@ function UsersController(){
 								}
 								return output
 							}
-							const validation = registrationValidation()
+							var validation = registrationValidation()
+
+							console.log("before new regex, validation is", validation)
+							var reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+							var unValidatedEmail = req.body.email;
+							var result = unValidatedEmail.match(reg);
+							if (!result){
+								validation += "Invalid email.\n"
+							}
+							console.log("after new regex, validation is", validation)
 
 							if(validation.length > 0){
 								res.json({validated: false, message: validation})
@@ -78,10 +83,6 @@ function UsersController(){
 								lastName: req.body.lastName,
 								phone: req.body.phoneNumber,
 								email: req.body.email,
-								creditCard: req.body.creditCard,
-								ccMonth: req.body.ccMonth,
-								ccYear: req.body.ccYear,
-								cvv: req.body.cvv,
 								streetAddress: req.body.streetAddress,
 								city: req.body.city,
 								states: req.body.states,

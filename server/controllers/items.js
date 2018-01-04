@@ -3,12 +3,12 @@ var mongoose = require('mongoose'),
 	Category = require('../models/category.js');
 
 
- // All callbacks in Mongoose use the pattern: callback(error, result). If an error occurs executing the query, 
- // the error parameter will contain an error document, and result will be null. 
+ // All callbacks in Mongoose use the pattern: callback(error, result). If an error occurs executing the query,
+ // the error parameter will contain an error document, and result will be null.
  // If the query is successful, the error parameter will be null, and the result will be populated with the results of the query.
 
 function ItemsController(){
-	
+
 
 	this.index = function(req,res){
 		console.log('ItemsController index');
@@ -18,15 +18,15 @@ function ItemsController(){
 	      		console.log(err);
 	      		//res.status(500).send('Failed to Load Items');
 	    	}
-	    	else { 
-	        	res.json(items);
+	    	else {
+	        	res.json({admin: req.session.admin, listOfItems: items});
 	        }
         })  // ends Item.find
-       
+
 	}; // ends this.index
- 
-	
-	
+
+
+
 	this.new = function(req,res){
 		// this would bring up the new item form screen
 		console.log('ItemsController new');
@@ -34,10 +34,10 @@ function ItemsController(){
 
 	this.create = function(req,res){
 		console.log('ItemsController create');
-		
-    
+
+
 	    Item.create({name: req.body.itemName, description: req.body.itemDescription,
-	      _category: req.body.category, donor: req.body.donor, restrictions: req.body.itemRestriction, 
+	      _category: req.body.category, donor: req.body.donor, restrictions: req.body.itemRestriction,
 	      value: req.body.fairMarketValue, packaged: false},  function(err, result){
 	    	// from front end ///////////
 	    	//	   itemName: '',
@@ -47,7 +47,7 @@ function ItemsController(){
       //           itemDescription: '',
       //           itemRestriction:
 
-      		
+
 
 	      if(err){
 	        console.log(err);
@@ -76,12 +76,12 @@ function ItemsController(){
 
 	this.update = function(req,res){
 		console.log('ItemsController update');
-		Item.findById(req.params.id, function (err, item) {  
-    		
+		Item.findById(req.params.id, function (err, item) {
+
 		    if (err) {
                 console.log(err);
 		        //res.status(500).send('Failed to Update Item');
-		    } 
+		    }
 		    else {
 		        // Update each attribute with any possible attribute that may have been submitted in the body of the request
 		        // If that attribute isn't in the request body, default back to whatever it was before.
@@ -93,7 +93,7 @@ function ItemsController(){
 		        item._category = req.body.category || item._category;
 
 
-	            
+
 		        item.save(function (err, item) {
 		            if (err) {
                         console.log(err)
@@ -115,6 +115,6 @@ function ItemsController(){
 			else{res.json(result)}
 		})
 	}
-  
+
 }
-module.exports = new ItemsController(); 
+module.exports = new ItemsController();

@@ -14,6 +14,7 @@ class Select extends Component{
         return(
             <div>
                 <select className='form-control' onChange={this.handleChange} name={this.props.name} >
+                    <option>Select a category</option>
                     {dropdownOptions}
                 </select>
             </div>

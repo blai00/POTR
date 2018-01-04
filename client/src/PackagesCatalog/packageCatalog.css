@@ -5,3 +5,40 @@
 .search-block{
     display: inline-block;
 }
+
+img.card_img {
+  width:300px
+}
+
+
+
+.package-item {
+
+}
+.package-item h3, .package-item p {
+  text-align: left;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis
+}
+
+/********************************/
+/* Temporary patch to display single columns beter, until good table solution */
+/********************************/
+
+  .packageCatalog table td:nth-child(4) {
+    width:50px;
+  }
+  .packageCatalog table td:nth-child(4) {
+    width:50px;
+  }
+  .packageCatalog table td:nth-child(5) {
+    width:50px;
+  }
+  .packageCatalog table td:nth-child(8) {
+    width:50px;
+  }
+  .packageCatalog table td:first-child {
+    min-width: 120px;
+  }

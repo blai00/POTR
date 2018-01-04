@@ -5,23 +5,91 @@
 .imgNtitle, .bidDetails{
     display: inline-block;
 }
+.imgNtitle img {
+  margin-top:30px;
+}
 .img-thumbnail{
-    width: 200px;
-    height: 200px;
+    width: 100%;
+    max-width:400px;
+    height: auto;
     border: 1px solid gray;
 }
 .packageName, .bidDetails, .packageDescription{
     text-align: left;
 }
-.bidSection{
-    background-color: cadetblue;
-    padding: 5px;
-    width: 300px;
+.packageDescription {
+  border: 1px solid #ccc;
+  padding: 10px; margin-top:10px;
+}
+.bidSection {
+    background-color: #D0EAFF;
+    /*padding: 10px;*/
+    width: 100%;
+}
+.packageDescription, .bidSection {
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
 }
 .bidInput{
     background-color: burlywood;
-}   
+}
 .donor-info{
     font-weight: bold;
-    color: orangered;
+    /*color: orangered;*/
 }
+
+
+/**/
+/**/
+
+
+h1.packageName {
+  font-weight: bold;
+}
+
+  .hline {
+    border-top: 1px solid #CCC;
+    margin: 10px 0 10px 0;
+  }
+  table.packIntro {
+    min-width: 300px;
+    line-height: 200%;
+    padding-bottom: 10px;
+    display: block
+  }
+    table.packIntro td:first-child {
+      width:115px;
+      text-align: right;
+      padding-right: 10px;
+    }
+    .curBid b, .curBid .placeBid{
+      font-size: 1.5em;
+    }
+    .curBid span {
+      color:red;
+    }
+      .curBid input {
+        padding: 0px 5px;
+        border:1px solid #333;
+      }
+      .curBid .placeBid {
+        margin-left: 10px;
+        padding:3px 20px;
+
+        border: 1px solid #6194BC;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#0090bc+0,006f9b+100 */
+        background: #0090bc; /* Old browsers */
+        background: -moz-linear-gradient(top, #0090bc 0%, #006f9b 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(top, #0090bc 0%,#006f9b 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom, #0090bc 0%,#006f9b 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0090bc', endColorstr='#006f9b',GradientType=0 ); /* IE6-9 */
+      }
+
+      p.packdescription {
+        padding-left: 20px;
+      }

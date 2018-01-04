@@ -30,9 +30,14 @@ class ItemEntryAdmin extends Component{
         //Get request for category dropdown list
         Axios.get("/api/categories")
         .then((response)=>{
-            this.setState({
-                selectOptions: response.data
-            })
+            if (!response.data.admin){
+              window.location = "/"
+            }
+            else{
+              this.setState({
+                  selectOptions: response.data.categories
+              })
+            }
         }).catch((err)=>{
             console.log("categoryList failed", err)
         })
@@ -77,6 +82,7 @@ class ItemEntryAdmin extends Component{
 
     render(){
         return(
+<div className="container"><div className="row">
             <div className='container row'>
                 <label><h2>Item Info</h2> </label>
                 <div className='item-info'>
@@ -141,6 +147,7 @@ class ItemEntryAdmin extends Component{
                 </div>
 
             </div>
+</div></div>
         )
     }
 }

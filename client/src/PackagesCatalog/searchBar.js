@@ -13,22 +13,16 @@ class SearchBar extends Component{
 
     render(){
         return(
-            <div>
-                <div className="seach-bar">
-                    <div className="form-block">
-                            <h5>Search By Category</h5>
-                            <select onChange={this.handleChange} value={this.props.selectValue} >
+                <div className='row'>
+                    <div className='form-inline search-panel'>
+                        <select className='form-control' onChange={this.handleChange} value={this.props.selectValue}>
                             <option value="All Categories">All Categories</option>
-                                {this.props.categories}  
-                            </select>
+                            {this.props.categories}  
+                        </select>
+                        <input type='text' className='form-control' onChange={this.handleNewLetter} placeholder='KeywordSearch' />                            
                     </div>
-                    <div className="search-block">
-                        <h5>Key Word Search</h5>
-                        <input type='text'  onChange={this.handleNewLetter} placeholder='Keyword Search'/>
-                    </div>
-                </div> {/* end of search-bar */}
-                <br/>
-            </div>
+                </div>
+
         )
     }
 }

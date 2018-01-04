@@ -1,7 +1,70 @@
+.navBg {
+  background-color: #222;
+border-color: #080808;
+margin-bottom: 20px;
+}
+  #nav .row {
+    background-color: #222;
+  }
+  #nav .navbar-inverse {
+    height:auto; ;
+  }
+
+  .navBg .navbar-inverse {
+    border:none;
+  }
+
+  .navBg .container {
+    padding-left:0;
+    padding-right:0;
+    margin:0 auto;
+  }
+
 .nav li{
      display: block;
-    font-size: 20px;
+    font-size: 1.7em;
     color: antiquewhite;
-    padding:5px;
-    margin: 5px;
+    /*padding:5px;
+    margin: 5px;*/
 }
+
+
+
+.form-inline {
+  display: block; width:100%;
+}
+
+.nopad {
+  padding-left:0;padding-right:0;
+}
+
+.navbar-brand {
+
+  padding:15px 15px 15px 30px; display: block; float: left;
+}
+
+
+.close-white {
+    color: #fff;
+    opacity: 1;
+}
+
+@media screen and (min-width: 768px) {
+  #nav .navbar-right {
+    margin-right:0;
+  }
+}
+
+/*************/
+
+.navBg {
+
+border-color: #080808;
+}
+  #nav a {
+    /*color:#A5D1F3;;*/
+  }
+  #nav .row {
+    /*background-color: #222;*/
+
+  }

@@ -20,7 +20,7 @@ function PackagesController(){
 						res.status(500).send('Failed to Load Packages');
 				}
 				else {
-						res.json(packages);
+						res.json({packages: packages, admin:req.session.admin});
 					}
 				})  // ends Package.find
 
@@ -43,10 +43,10 @@ function PackagesController(){
 	    if (req.body.selectedItems.length == 0){
           console.log()
           console.log('reached empty item list')
-          return res.json(false)  
+          return res.json(false)
         }
-        
-        
+
+
         Package.create({name: req.body.packageName, _items: req.body.selectedItems, description: req.body.packageDescription,
 	    	value: req.body.totalValue, bid_increment: req.body.increments, _category: req.body.category,
 			bid: [], amount: req.body.openingBid
@@ -55,26 +55,25 @@ function PackagesController(){
 
 
 		      if(err){
-		        console.log(err);
+				console.log(err);
+				return;
 		      }
 		      else{
 
 			    	for(var i=0; i<package._items.length; i++){
-
 			    		Item.update({_id: package._items[i]}, { $set: { _package: package._id, packaged: true}}, function(err,result){
 							if(err){
 								console.log(err);
+								return;
 							}
-	                        else{
-								// changed res.json(package) to return res.send() because set header after send error and resulting data is unnecessary anyways
-                                console.log('submit correctly')
-								return res.json(true);
-	                        }
-						});
 
-			    	}
+						})
+						if (i == package._items.length -1){
+							return res.json(true)
+						}
+					};
+			    }
 			  }
-			}
 		); // end of Package.create
 
 
@@ -87,12 +86,12 @@ function PackagesController(){
 	this.show = function(req,res){
 		console.log('PackagesController show');
 		// sending ID by url or in req.body????????????????
-		Package.findById(req.params.id, function(err,result){
+		Package.findById(req.params.id).populate("_items").exec(function(err,result){
 			if(err){
 				console.log(err);
 			}
 			else{
-				res.json(result);
+				res.json({packages: result});
 			}
 		})
 	};
