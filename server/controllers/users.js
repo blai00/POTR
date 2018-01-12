@@ -12,6 +12,20 @@ var mongoose = require('mongoose'),
 function UsersController(){
 	// get all bidders and their packages won, audit page
 	this.index = function(req,res){
+		users_array = []
+		User.find({}).exec(function(err,users)
+		{
+			if(err){
+				console.log(err)
+			}
+			else{
+				for(let i = 0; i < users.length; i ++){
+					users_array.push({'id':users[i]._id , 'name': users[i].userName, 'admin_status': users[i].admin })
+				}
+			res.json(users_array)
+			}
+			
+		})
 		console.log('UsersController index');
 	};
 	// could use this to get the login/registration screen or for the admin to change between bidders
