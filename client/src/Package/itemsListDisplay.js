@@ -6,21 +6,28 @@ class DisplayItems extends Component{
         super(props);
         this.state = {
             itemsList : [],
-            selectedItems: props.selectedItems
+            selectedItems: props.selectedItems,
+            is_checked: true
         }
     }
 
     componentDidMount(){
         Axios.get("/api/items")
         .then((result) =>{
-            let unpackaged_items = [];
-            for(var i = 0; i < result.data.listOfItems.length; i++){
-                if(!result.data.listOfItems[i].packaged ){
-                    unpackaged_items.push(result.data.listOfItems[i])
-                }
-            }
+            let listOfItems = result.data.listOfItems;
+            // console.log("listOfItems is an array", listOfItems);
+            // let unpackaged_items = [];
+            // for(var i = 0; i < listOfItems.length; i++){
+            //     if(!listOfItems[i].packaged ){
+            //         unpackaged_items.push(listOfItems[i])
+            //     }
+            //     // else if(result.data.listOfItems[i].packaged === true){
+            //     //     console.log("Check for packaged", result.data.listOfItems[i].packaged)
+            //     // }
+            // }
+            // console.log("ItemListDisplay", result.data)
             this.setState({
-                itemsList: unpackaged_items
+                itemsList: listOfItems
             })
         }).catch((err) =>{
             console.log(err);
@@ -42,21 +49,43 @@ class DisplayItems extends Component{
         }
    }
 
+   toggleCheckbox = () =>{
+       this.setState({
+            is_checked: !this.state.is_checked
+       })
+   }
+
     render(){
         //maping the array of objects into table data
         let items = this.state.itemsList.map((item,index) =>{
-            console.log("items is", items)
-            return(
-                <tr key={index} >
-                    <td><input type='checkbox' value={item.value} name={item._id}  onChange={this.rowSelect}/></td>
-                    <td>{item._id}</td>
-                    <td>{item.name}</td>
-                    <td>{item.value}</td>
-                    <td>{item.donor}</td>
-                    <td>{item.description}</td>
-                    <td>{item.restrictions}</td>
-                </tr>
-            )
+            // console.log("items packaged", item.packaged)
+            if(item.packaged === true && this.props.packageId){
+                return(
+                    <tr key={index} >
+                        <td><input type='checkbox' value={item.value} name={item._id} 
+                            onChange={this.rowSelect} onClick={this.toggleCheckbox} checked={this.state.is_checked}/></td>
+                        <td>{item._id}</td>
+                        <td>{item.name}</td>
+                        <td>{item.value}</td>
+                        <td>{item.donor}</td>
+                        <td>{item.description}</td>
+                        <td>{item.restrictions}</td>
+                    </tr>
+                )
+            }
+            else if(!item.packaged){
+                return(
+                    <tr key={index} >
+                        <td><input type='checkbox' value={item.value} name={item._id}  onChange={this.rowSelect} /></td>
+                        <td>{item._id}</td>
+                        <td>{item.name}</td>
+                        <td>{item.value}</td>
+                        <td>{item.donor}</td>
+                        <td>{item.description}</td>
+                        <td>{item.restrictions}</td>
+                    </tr>
+                )
+            }
         })
         return(
            <div className='table-responsive table-container'>

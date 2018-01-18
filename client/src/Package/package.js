@@ -18,7 +18,8 @@ class Package extends Component{
             selectedItems: [],
             selectedNames: [],
             totalItems: 0,
-            totalValue: 0
+            totalValue: 0,
+            selectedItemsList:[]
         }
     }
 
@@ -69,7 +70,7 @@ class Package extends Component{
             url:'/api/packages',
             data:{packageName: this.state.packageName, packageDescription: this.state.packageDescription,
                   category: this.state.category, openingBid: this.state.openingBid, increments: this.state.increments,
-                items:this.state.selectedItems, totalValue: this.state.totalValue}
+                selectedItems: this.state.selectedItems, totalValue: this.state.totalValue}
             }).then((response) =>{
             if (response.data === false){
               alert("Package cannot be empty.")
@@ -96,43 +97,49 @@ class Package extends Component{
 
     //selecte items from the list and updating the display fields(totalItems and totalValue)
     capturingGroupedItems = (item) =>{   //callback function with two parameters -- item(is a number) and value(fair market value of the selected item)
-        let itemSelect = this.state.selectedItems;
-        itemSelect.push(item._id);
-        let nameSelect = this.state.selectedNames;
-        nameSelect.push(item.name);
+        // let itemSelect = this.state.selectedItems;
+        // itemSelect.push(item._id);
+        // let nameSelect = this.state.selectedNames;
+        // nameSelect.push(item.name);
+        let {selectedItems, selectedNames, selectedItemsList} = this.state;
+        selectedItems.push(item._id);
+        selectedNames.push(item.name);
+        selectedItemsList.push(item);
         this.setState({
-            selectedItems: itemSelect,
-            selectedNames: nameSelect,
-            totalItems: this.state.selectedItems.length,
+            selectedItems: selectedItems,
+            selectedNames: selectedNames,
+            totalItems: selectedItems.length,
             totalValue:  this.state.totalValue + item.value
         })
     }
      //unSelecte items from the list and updating the display fields(totalItems and totalValue)
     removeGroupedItems = (value, item) => {
-        let itemUnselect = this.state.selectedItems;
-        var nameUnselect = this.state.selectedNames;
+        let {selectedItems, selectedNames, selectedItemsList} = this.state;
+        // let selectedItems = this.state.selectedItems;
+        // var selectedNames = this.state.selectedNames;
         let id;
-        for(var i=0; i<itemUnselect.length;i++){
-            if(item === String(itemUnselect[i])){
+        for(var i=0; i<selectedItems.length;i++){
+            if(item === String(selectedItems[i])){
                 id = i;
                 break;
             }
         }
-        itemUnselect.splice(id,1)
-        nameUnselect.splice(id,1)
+        selectedItems.splice(id,1);
+        selectedNames.splice(id,1);
+        selectedItemsList.splice(id,1);
 
         // console.log(itemUnselect)
-        // console.log(nameUnselect)
+        // console.log(selectedNames)
         this.setState({
-            selectedItems: itemUnselect,
-            selectedNames: nameUnselect,
-            totalItems: this.state.selectedItems.length,
+            selectedItems: selectedItems,
+            selectedNames: selectedNames,
+            totalItems: selectedItems.length,
             totalValue: this.state.totalValue - value
         })
     }
 
     render(){
-        let items = this.state.selectedItems.map((item,index) =>{
+        let items = this.state.selectedItemsList.map((item,index) =>{
             return <tr key={index} >
                         <td>{item._id}</td>
                         <td>{item.name}</td>

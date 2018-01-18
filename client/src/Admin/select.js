@@ -12,7 +12,7 @@ class Select extends Component{
             return <option key={index} value={itemValue.name} >{itemValue.name}</option>
         })
         let optionValue = this.props.optionValue === undefined?'Select a category ': this.props.optionValue;
-        console.log("optionValue:", optionValue);
+        // console.log("optionValue:", optionValue);
         return(
             <div>
                 <select className='form-control' onChange={this.handleChange} name={this.props.name} >

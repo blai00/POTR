@@ -39,7 +39,7 @@ function PackagesController(){
 		// this handles the form post that creates a new package
 		console.log('PackagesController create');
 
-
+		console.log("req body selectedItems", req.body.selectedItems);
 	    //////// HOW ARE WE RECEIVING THE INCLUDED ITEMS?  Should be an array of item id's  //////
         /////// When creating Package, do we need to save the bids, seems to be missing in this create statement ////
 	    if (req.body.selectedItems.length == 0){
@@ -141,12 +141,25 @@ function PackagesController(){
 		            }
 		            else{
 		            	// update the items in this package
-						console.log("save update pacakge")
-		    					for(id in package._items){
-		    						Item.update({_id: id}, { $set: { _package: package.id}});
-		    					}
+						// console.log("save update pacakge")
+		    			// 		for(id in package._items){
+		    			// 			Item.update({_id: id}, { $set: { _package: package.id, packaged: true}});
+		    			// 		}
 
-		            	res.json(package);
+		            	// res.json(package);
+						for(var i=0; i<package._items.length; i++){
+						console.log("Packaged ");
+			    		Item.update({_id: package._items[i]}, { $set: { _package: package._id, packaged: true}}, function(err,result){
+							if(err){
+								console.log(err);
+								return;
+							}
+
+						})
+						if (i == package._items.length -1){
+							return res.json(true)
+						}
+					};
 		            }
 		        });
 		    }

@@ -148,7 +148,7 @@ class PackageDetails extends Component{
             return(
                 <div key={index}>
                     <li>{item.name} - {item.description} - by <span className='donor-info'>{ item.donor}</span></li>
-                    <p>Item Restriction - {item.restriction}</p>
+                    <p>Item Restriction - {item.restrictions}</p>
                 </div>
             )
         })
