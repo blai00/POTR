@@ -7,7 +7,7 @@ class DisplayItems extends Component{
         this.state = {
             itemsList : [],
             selectedItems: props.selectedItems,
-            is_checked: true
+            // is_checked: true
         }
     }
 
@@ -36,34 +36,41 @@ class DisplayItems extends Component{
     }
     rowSelect= (e) =>{
         var object={};
+        console.log("checked check", e.target.checked, e.target.name);
         if(e.target.checked){
+            console.log("check if", e.target.name);
             for (var i = 0; i < this.state.itemsList.length; i++){
               if (e.target.name === String(this.state.itemsList[i]._id)){
+                  console.log("package-id",  this.state.itemsList[i]._id);
                 object = this.state.itemsList[i];
                 break;
               }
             }
             this.props.capturingGroupedItems(object);
         }else{
+            console.log("check else", e.target.name);
             this.props.removeGroupedItems(parseInt((e.target.value),10), e.target.name)
         }
    }
 
-   toggleCheckbox = () =>{
-       this.setState({
-            is_checked: !this.state.is_checked
-       })
-   }
+//    toggleCheckbox = (e) =>{
+//        console.log("Checkbox", e.target.name);
+//        let checked = false;
+//     //    this.setState({
+//     //         is_checked: !e.target.checked
+//     //    })
+//     return checked;
+//    }
 
     render(){
         //maping the array of objects into table data
         let items = this.state.itemsList.map((item,index) =>{
-            // console.log("items packaged", item.packaged)
+            console.log("items packaged", this.state.itemsList);
             if(item.packaged === true && this.props.packageId){
                 return(
                     <tr key={index} >
                         <td><input type='checkbox' value={item.value} name={item._id} 
-                            onChange={this.rowSelect} onClick={this.toggleCheckbox} checked={this.state.is_checked}/></td>
+                            onChange={this.rowSelect} defaultChecked='true'/></td>
                         <td>{item._id}</td>
                         <td>{item.name}</td>
                         <td>{item.value}</td>
