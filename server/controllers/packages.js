@@ -119,45 +119,45 @@ function PackagesController(){
 		        package.bid_increment = req.body.increments || package.bid_increment;
 		        package._category = req.body.category || package._category;
 
-		        // we don't want the items removed from this package to still show this package in their
-						// item._package field so we will just set each current item._package to null
-						// this shows sets all items in current package to unpackaged (currently)
-						// we want all items in this package AND all unpacked items (future design)
+						//-------------------------------------------------------------------
+						// ATTENTION!!! making our oldItems & newItems  to the same format
+						//-------------------------------------------------------------------
 
-						var oldItems = package._items; // array of numbers [1000, 1002]
-						var newItems = []; // array of objects [{_id, ..},{}]
-						for(let i=0; i< req.body.selectedItems.length; i++){
-							newItems.push(req.body.selectedItems[i]._id);
-						}
+							// array of numbers [1000, 1002]
+							var oldItems = package._items;
 
-						// first we setting all old items "packaged" to false, and deleting reference _package to our package
-						if(oldItems.length > 0) {
-							for(var i=0; i<oldItems.length; i++){
-								console.log("Packaged ");
-								// setting packaged to false, and UNSETTING _package reference
-								Item.update({_id: oldItems[i]}, { $set: {packaged: false}, $unset: { _package: "" }}, function(err,result){
-									if(err){
-										console.log("???--> $unset old _items error: ", err);
-									}
-								})
+							// req.body.selectedItems is array of objects [{_id, ..},{}]
+							var newItems = [];
+							// making it the same data format as package._items [1000, 1002, ...]
+							for(let i=0; i< req.body.selectedItems.length; i++){
+								newItems.push(req.body.selectedItems[i]._id);
 							}
-						}
-						// for(let i = 0; i < package._items.length; i++){
-						// 			console.log("item id",id );
-						// 		package._items[i]({_id:ObjectId(id)}, { $set: { _package: null}});
-						//
 
-		        // now set package._items to the items in this request, we will reset the appropriate item._package fields below
+						// (1) FIRST: we setting all old items "packaged" to false, and deleting (unsetting) reference _package to our package
+								if(oldItems.length > 0) {
+									for(var i=0; i<oldItems.length; i++){
+										console.log("Packaged ");
+										// setting packaged to false, and UNSETTING _package reference (it is better practice than setting it to null)
+										Item.update({_id: oldItems[i]}, { $set: {packaged: false}, $unset: { _package: "" }}, function(err,result){
+											if(err){
+												console.log("???--> $unset old _items error: ", err);
+											}
+										})
+									}
+								}
+
+		        // updating package._items with new array of IDs coming from "edit page"
 		        package._items = newItems ;
 
-						for(var i=0; i<package._items.length; i++){
-						console.log("Packaged ");
-			    		Item.update({_id: package._items[i]}, { $set: { _package: package._id, packaged: true}}, function(err,result){
-									if(err){
-										console.log("?&?? --> $set new _items error: ", err);
-									}
-							})
-						};
+						// (1) SECOND: now we are setting all (new) items's "packaged" to true, and making (setting) reference _package to our package ID
+								for(var i=0; i<package._items.length; i++){
+								console.log("Packaged ");
+					    		Item.update({_id: package._items[i]}, { $set: { _package: package._id, packaged: true}}, function(err,result){
+											if(err){
+												console.log("?&?? --> $set new _items error: ", err);
+											}
+									})
+								};
 
 
 		        // Save the updated document back to the database
@@ -165,19 +165,10 @@ function PackagesController(){
 		        package.save(function (err, package) {
 							console.log("Package save")
 		            if (err) {
-                        console.log(err)
-		                //res.status(500).send(err)
+                        console.log("*** ---> saving updated package error: ", err)
 		            }
 		            else{
-		            	// update the items in this package
-						// console.log("save update pacakge")
-		    			// 		for(id in package._items){
-		    			// 			Item.update({_id: id}, { $set: { _package: package.id, packaged: true}});
-		    			// 		}
 									return res.json(true)
-		            	// res.json(package);
-
-
 		            }
 		        });
 		    }
