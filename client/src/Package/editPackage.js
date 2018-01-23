@@ -49,7 +49,7 @@ class EditPackage extends Component{
         var packageId = this.props.match.params.packageId
         Axios.get("/api/packages/"+packageId)
             .then((result)=>{
-                console.log('result', result.data.packages);
+                console.log('editPackage.js --> result', result.data.packages);
                 let pack = result.data.packages;
                 let packItems = pack._items.map((item,index)=>{
                         return item.name
@@ -66,9 +66,14 @@ class EditPackage extends Component{
                     selectedNames: packItems,
                     selectedItemsList: pack._items
                 })
+                console.log("///////////////////////////////");
+                console.log("editPackage.js -- we are printing this.state.selectedItems... ");
+                console.log(this.state.selectedItems);
             }).catch((err)=>{
                 console.log('err', err)
             })
+
+
         }
 
 
@@ -129,7 +134,7 @@ class EditPackage extends Component{
         // let nameSelect = this.state.selectedNames;
         // nameSelect.push(item.name);
         let {selectedItems, selectedNames, selectedItemsList} = this.state;
-        selectedItems.push(item._id);
+        // selectedItems.push(item._id);
         selectedNames.push(item.name);
         selectedItemsList.push(item);
         this.setState({
@@ -138,22 +143,46 @@ class EditPackage extends Component{
             totalItems: selectedItems.length,
             totalValue:  this.state.totalValue + item.value
         })
+        console.log("///////////////////////////////");
+        console.log("editPackage.js -- we are printing this.state.selectedItems after pushing in it NEW item... ");
+        console.log(this.state.selectedItems);
     }
      //unSelecte items from the list and updating the display fields(totalItems and totalValue)
     removeGroupedItems = (value, item) => {
         let {selectedItems, selectedNames, selectedItemsList} = this.state;
         // let selectedItems = this.state.selectedItems;
         // var selectedNames = this.state.selectedNames;
-        let id;
-        for(var i=0; i<selectedItems.length;i++){
-            if(item === String(selectedItems[i])){
-                id = i;
+        // let id;
+
+        console.log("{selectedItems, selectedNames, selectedItemsList} where we are looking for: ", item, " with value: ", value)
+        console.log(selectedItems)
+        console.log(selectedNames)
+        console.log(selectedItemsList)
+
+        for(let i=0; i<selectedItems.length;i++){
+            if( +item === selectedItems[i]._id ){
+              selectedItems.splice(i,1);
                 break;
             }
         }
-        selectedItems.splice(id,1);
-        selectedNames.splice(id,1);
-        selectedItemsList.splice(id,1);
+        for(let i=0; i<selectedItemsList.length;i++){
+            if( +item === selectedItemsList[i]._id ){
+
+              for(let y=0; i<selectedNames.length;i++){
+                  if( selectedItems[i].name === selectedNames[y] ){
+                    selectedNames.splice(y,1);
+                      break;
+                  }
+              }
+              selectedItemsList.splice(i,1);
+                break;
+            }
+        }
+
+
+        // selectedItems.splice(id,1);
+        // selectedNames.splice(id,1);
+        // selectedItemsList.splice(id,1);
 
         // console.log(itemUnselect)
         // console.log(selectedNames)
@@ -170,7 +199,7 @@ class EditPackage extends Component{
             return <tr key={index} >
                         <td>{item._id}</td>
                         <td>{item.name}</td>
-                        <td>{item.value}</td>                    
+                        <td>{item.value}</td>
                     </tr> })
 
         return(
@@ -186,7 +215,7 @@ class EditPackage extends Component{
                                     <textarea name='packageDescription' className='form-control' value={this.state.packageDescription} rows='5'  onChange={this.onPackageChange} placeholder='Package Description'></textarea><br/><br/>
                                     <label className="col-sm-2 col-form-label"> Category</label><br/>
                                     <Select selectOptions={this.state.categoryList} name='category' className='form-control'
-                                            value={this.state.category} handleChange={this.onPackageChange} 
+                                            value={this.state.category} handleChange={this.onPackageChange}
                                             optionValue={this.state.category} required/><br/>
 
                                     <TestModal addingCategory={this.addingCategory}/><br/><br/>
@@ -220,7 +249,7 @@ class EditPackage extends Component{
                                                     <tr>
                                                         <th>Item Number</th>
                                                         <th>Item Name</th>
-                                                        <th>Fair Market Value</th>                            
+                                                        <th>Fair Market Value</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
