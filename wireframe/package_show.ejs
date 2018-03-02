@@ -10,8 +10,9 @@
 
 		<script type='text/javascript'>
 			var socket = io.connect('http://localhost:8000');
-
+      
 			$(document).on('submit', function(){
+
 					console.log("Before receiving from server, " + $('#bid_amount')[0].defaultValue)
 					socket.emit('msg_sent', {packId: '<%= package._id %>', bid: parseInt($('#bid_amount')[0].defaultValue), userName: '<%= userName %>' })
 					event.preventDefault();
@@ -56,10 +57,10 @@
 			<% if (!userName) {%>
 				<a href='/api/users_login'>Login</a>
 			<%}else{%>
-				<input type='submit' value='Place Bid'>
+				<input id="submitButton" type='submit' value='Place Bid'>
 
 			</form>
-
+        <button type="button" name="Custom" id="custom">Custom Bid</button>
       <a href="/users/interested/<%= package._id %>"><button type="button" name="interested">Interested?</button></a>
       <%}%>
 		</div>
@@ -69,6 +70,48 @@
 				<p>Item Name: <%= package._items[i].name %> donated by: <%= package._items[i].donor %></p>
 			<%}%>
 		</div>
+    <script>
+    console.log(<%=package.bids.length%>);
 
-		
+
+      $('#custom').click(function () {
+
+        console.log($('#bid_amount').attr('readonly'));
+
+        if ($('#bid_amount').attr('readonly') === 'readonly'){
+
+          if (<%=package.bids.length%> > 0) {
+
+          $('#bid_amount').attr({'readonly': false,
+                                  'placeholder': '<%= package.bids[package.bids.length-1].bidAmount + package.bid_increment %> or higer'});
+          $('#bid_amount').val(null);
+        }else{
+          $('#bid_amount').attr({'readonly': false,
+                                  'placeholder': '<%= package.amount%> or higer'});
+          $('#bid_amount').val(null);
+              }
+        }
+        else{
+          if (<%=package.bids.length%> > 0) {
+            $('#bid_amount').attr({'readonly': 'readonly',
+                                  'placeholder': '<%= package.bids[package.bids.length-1].bidAmount + package.bid_increment %> or higer'});
+            $('#bid_amount').val('<%= package.bids[package.bids.length-1].bidAmount + package.bid_increment %>')
+        }else{
+          $('#bid_amount').attr({'readonly': 'readonly',
+                              'placeholder': '<%= package.amount%> or higer',});
+
+          $('#bid_amount').val('<%= package.amount%>')
+        }
+      }
+        $(this).text($(this).text() == 'Preset Bid' ? 'Custom Bid' : 'Preset Bid')
+      })
+
+            $("#submitButton").click(function(){
+              if($("#bid_amount").val() < <%= package.amount%> || $("#bid_amount").val() < <%= package.bids[package.bids.length-1].bidAmount + package.bid_increment %>){
+                alert("Tali does not like alerts")
+              }
+              return false;
+            })
+    </script>
+
 	</body>
