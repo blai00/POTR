@@ -55,13 +55,21 @@ module.exports = function(app) {
 	app.get('/packages/:id', function(req,res){
 		packages.edit(req,res)});
 	//filtering the packages according to the categories
-	app.post('/api/get_selected_packages', function(req, res){
-		packages.get_selected(req,res)
-	});
+	// app.post('/api/get_selected_packages', function(req, res){
+	// 	packages.get_selected(req,res)
+	// });
 	//removing a package from the DB
 	app.get('/api/remove_package/:id', function(req, res){
 		packages.remove_package(req, res)
 	})
+	//removes last bid on package
+	app.get('/packages/cancel_bid/:id', function(req,res){
+		packages.cancel_bid(req,res)
+	})
+	app.get('/packages/featured/:id', function(req, res) {
+		packages.featured(req, res)
+	})
+
 
 
 	// CATEGORIES //
@@ -106,9 +114,9 @@ module.exports = function(app) {
 		users.register(req,res)});
 
 	// checks if a user is logged in
-	app.get('/api/users/loggedin', function(req,res){
-		console.log("route in");
-		users.loggedin(req,res)});
+	// app.get('/api/users/loggedin', function(req,res){
+	// 	console.log("route in");
+	// 	users.loggedin(req,res)});
 
 	// logout a specific user
 	app.get('/api/users/logout', function(req,res){
@@ -129,8 +137,16 @@ module.exports = function(app) {
 		users.admin_change(req,res)});
 
 	//check who is logged in
-	app.get('/api/which_user_is_logged_in', function(req, res){
-		users.who_is_logged_in(req, res)});
+	// app.get('/api/which_user_is_logged_in', function(req, res){
+	// 	users.who_is_logged_in(req, res)});
+
+	app.get('/users/interested/:id', function(req, res) {
+		users.interested(req, res)
+	})
+
+	app.get('/users/uninterested/:id', function (req,res) {
+		users.uninterested(req, res)
+	})
 
 
 		// this is CATCH ALL ROUTS server side patch. To solve production error, when fron-end rout doesn't work properly

@@ -2,73 +2,176 @@
 <html>
 
 <head>
-    <title>
-        Create New User
-    </title>
+  <title>
+    Create New User
+  </title>
+
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 
 </head>
 
 <body>
+
   <%if(admin){%>
-  <%- include('admin_header') -%>
-  <%}else{%>
-    <%- include('header') -%>
-  <%}%>
-  <h2>Update User Profile</h2>
+    <%- include('admin_header') -%>
+    <%}else{%>
+      <%- include('header') -%>
+      <%}%>
+      <div class="container mb-4">
+        <div class="well">
+          <h1 class="py-4">Create User Profile</h1>
+          <form id="registrationForm" action="/api/users" method="post">
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">First Name</label>
+              <div class="col-sm-10">
+                <input placeholder="First Name" type="text" name="firstName" id="firstName" class="form-control" value required>
+              </div>
+            </div>
 
-  <form action="/api/users" method="post">
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Last Name</label>
+              <div class="col-sm-10">
+                <input placeholder="Last Name" type="text" name="lastName" id="lastName" class="form-control" value required>
+              </div>
+            </div>
 
-          First Name:&nbsp
-          <input placeholder="First Name" type="text" name="firstName">
-      <label>
-          Last Name:&nbsp
-          <input placeholder="Last Name" type="text" name="lastName">
-      </label>
-
-    <p>
-    <label>Address:&nbsp
-      <input size="30" placeholder="Strees Address" type="text" name="streetAddress">
-    </label>
-  </p>
-  <p>
-      <label>City:&nbsp
-        <input placeholder="City" type="text" name="city">
-      </label>
-      <label>State:&nbsp
-       <input size="2" placeholder="ST" type="text" name="states">
-      </label>
-      <label>Zip:&nbsp
-       <input placeholder="Zip" type="text" name="zip">
-      </label>
-  </p>
-  <p>
-    <label>Phone:&nbsp
-     <input placeholder="Phone" type="text" name="phoneNumber">
-    </label>
-  </p>
-  <p>
-    <label>Email Adress:&nbsp
-      <input placeholder="Email Address" type="text" name="email">
-    </label>
-  </p>
-  <p>
-    <label>Username:&nbsp
-      <input placeholder="Username" type="text" name="userName">
-    </label>
-  </p>
-  <p>
-    <label>Password:&nbsp
-      <input placeholder="Password" type="password" name="password">
-    </label>
-  </p>
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Address:</label>
+              <div class="col-sm-10">
+                <input placeholder="Street" type="text" name="streetAddress" id="streetAddress" class="form-control" value required>
+              </div>
+            </div>
 
 
-  <p>
-     <input type="submit" value="Submit">
-  </p>
-  </form>
-  </div>
 
-</body>
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">City</label>
+              <div class="col-sm-10">
+                <input placeholder="City" type="text" name="city" id="city" class="form-control" value>
+              </div>
+            </div>
 
-</html>
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">State:</label>
+              <div class="col-sm-10">
+                <input placeholder="State" type="text" name="states" id="states" class="form-control" value >
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Zip:</label>
+              <div class="col-sm-10">
+                <input placeholder="Zip" type="text" name="zip" id="zip" class="form-control" value >
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Phone:</label>
+              <div class="col-sm-10">
+                <input placeholder="Phone" type="text" name="phoneNumber" id="phoneNumber" class="form-control"  >
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Email Address</label>
+              <div class="col-sm-10">
+                <input placeholder="Email Address" type="email" name="email" id="email" class="form-control" value >
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">User Name</label>
+              <div class="col-sm-10">
+                <input placeholder="User Name" type="text" name="userName" id="userName" class="form-control" value >
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label  class="col-sm-2 col-form-label">Password</label>
+              <div class="col-sm-10">
+                <input placeholder="Password" type="password" name="password" id="password" class="form-control" value >
+              </div>
+            </div>
+            <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Password Confirmation:&nbsp</label>
+              <div class="col-sm-10">
+              <input id="confirm" placeholder="Confirm Password" type="password" class="form-control" name="confirm">
+          </div>
+        </div>
+            <input type="submit" value="Submit" class="btn btn-default">
+          </form>
+        </div>
+      </div>
+      <script>
+
+      var validator = $("#registrationForm").validate({
+        rules: {
+          firstName: {
+            required: true,
+            rangelength: [2, 50]
+          },
+          lastName: {
+            required: true,
+            rangelength: [2, 50]
+          },
+          streetAddress: {
+            required: true,
+            street: true
+          },
+          city: {
+            required: true,
+            rangelength: [2, 50]
+          },
+          states: {
+            required: true,
+            state: true
+          },
+          zip: {
+            required: true,
+            zipcodeUS: true
+          },
+          phoneNumber: {
+            required: true,
+            phoneUS: true,
+          },
+          email: {
+            required: true,
+            email: true
+          },
+          userName: {
+            required: true,
+            user: true,
+            nowhitespace: true,
+            rangelength: [5, 25]
+          },
+          password: {
+            required: true,
+            minlength: 6
+          },
+          confirm: {
+            equalTo: "#password"
+          }
+        }
+      });
+      $.validator.methods.email = function( value, element ) {
+        return this.optional( element ) || /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test( value );
+      }
+      jQuery.validator.addMethod("street", function(value, element) {
+        return this.optional(element) || /^\s*\S+(?:\s+\S+){2}/.test(value);
+      }, "Please specify a valid street address");
+
+      jQuery.validator.addMethod("state", function(value, element) {
+        return this.optional(element) || /^(A[AEKLPRZ]|C[AOT]|D[CE]|FL|GA|HI|I[ADLN]|K[SY]|LA|M[ADEINOST]|N[CDEHJMVY]|O[HKR]|PA|RI|S[CD]|T[NX]|UT|V[AT]|W[AIVY]|a[aeklprz]|c[aot]|d[ce]|fl|ga|hi|i[adln]|k[sy]|la|m[adeinost]|n[cdehjmvy]|o[hkr]|pa|ri|s[cd]|t[nx]|ut|v[at]|w[aivy])$/.test(value);
+      }, "Please specify the two-digit code for a US state");
+
+      jQuery.validator.addMethod("user", function(value, element) {
+        return this.optional(element) || /^[a-zA-Z0-9\-_.]+$/.test(value);
+      }, "Please use only letters numbers -_.");
+
+      validator.form();
+
+      </script>
+    </body>
+  </html>

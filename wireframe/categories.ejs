@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Categories</title>
+</head>
+<body>
+    <%if(admin){%>
+    <%- include('admin_header') -%>
+    <%}else{%>
+    <%- include('header') -%>
+    <%}%>
+    <div class="container">
+      <h3>List of Categories</h3>
+      <ul>
+        <% for(c in categories){ %>
+          <li><%= categories[c].name %></li>
+          <%}%>
+        </ul>
+        <form action='/api/categories' method='post'>
+          <div class="form-group row">
+            <!-- <label class="col-sm-2 col-form-label">Add Category</label> -->
+            <div class="col-sm-10">
+              <input placeholder="Add New Category" type="text" name="name" id="categoryName" class="form-control" >
+            </div>
+          </div>
+          <!-- <input type='text' name='name' placeholder="Add New Category"> -->
+          <input type='submit' value='Add New Category' class="btn btn-default">
+        </form>
+    </div>
+</body>
+</html>

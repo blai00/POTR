@@ -18,7 +18,8 @@ var packageSchema = new Schema({
 // >>>>>>> Stashed changes
  value: Number,  // maybe prepopulate field with for item in package._items { value += item.value }
  amount: Number,
-
+ priority: {type: Number, required: true, default: 0},
+ featured: Boolean,
 
  bid_increment: Number,  // increment is a reserved word, so used bid_increment
 

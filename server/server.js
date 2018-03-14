@@ -30,7 +30,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 var path = require("path");
-
+app.use(express.static("../public"));
 
 // static content
 // static content
@@ -128,9 +128,6 @@ var io = require('socket.io').listen(server);
 
 
 io.sockets.on('connection', function(socket){
-		socket.on("helloWorld", function(data){
-			console.log(data)
-	})
 
 // DEBUGGING INFO JUST TO MONITOR allBidsObject is healty
 console.log("/".repeat(20) + " allBidsBigObj before socket logic " + "/".repeat(20));
@@ -262,7 +259,7 @@ console.log('data', data);
 					button: true
 				} );
 				console.log("button was enabled ")
-			},100);
+			},500);
 			// NOW SOMEBODY ELSE CAN PLACE A BID ON THIS PACKAGE AGAIN
 			packagesButtonStates[data.packId].buttonstate = true;
 

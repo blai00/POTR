@@ -1,6 +1,7 @@
 var mongoose = require('mongoose'),
 	Item = require('../models/item.js'),
 	Category = require('../models/category.js');
+	Package = require('../models/package.js');
 
 
  // All callbacks in Mongoose use the pattern: callback(error, result). If an error occurs executing the query,
@@ -12,15 +13,32 @@ function ItemsController(){
 
 	this.index = function(req,res){
 		console.log('ItemsController index');
-		Item.find({}, function(err, items) {
+		var packages;
+		var categories;
+		Package.find({}, function (err, result) {
+			if (err) {
+				console.log(err);
+			}else {
+				packages = result;
+			}
+		})
+		Category.find({}, function (err, result) {
+			if (err) {
+				console.log(err);
+			}else{
+				categories = result
+			}
+		})
+		Item.find({}).populate("_package").sort({_category:'ascending'}).exec(function(err, items){
     		// This is the method that finds all of the items from the database
 	    	if(err) {
 	      		console.log(err);
 	      		//res.status(500).send('Failed to Load Items');
 	    	}
 	    	else {
+
 	        	//res.json({admin: req.session.admin, listOfItems: items});
-				res.render('items', {items: items, admin: req.session.admin, userName: req.session.userName})
+				res.render('items', {items: items, admin: req.session.admin, userName: req.session.userName, packages: packages, categories: categories})
 
 	        }
         })  // ends Item.find
@@ -48,18 +66,9 @@ function ItemsController(){
 }
 	this.create = function(req,res){
 		console.log('ItemsController create');
-
-			Category.create({name: req.body.category}, function(err, result) {
-				if(err){
-	        console.log(err);
-	        //res.status(500).send('Failed to Create Item');
-	      }
-	      else{
-	      }
-			})
 	    Item.create({name: req.body.itemName, description: req.body.itemDescription,
 	      _category: req.body.category, donor: req.body.donor, restrictions: req.body.itemRestriction,
-	      value: req.body.fairMarketValue, packaged: false},  function(err, result){
+	      value: req.body.fairMarketValue, packaged: false, priority: req.body.priority},  function(err, result){
 	    	// from front end ///////////
 	    	//	   itemName: '',
       //           donor: '',
@@ -67,9 +76,6 @@ function ItemsController(){
       //           fairMarketValue: '',
       //           itemDescription: '',
       //           itemRestriction:
-
-
-
 	      if(err){
 	        console.log(err);
 	        //res.status(500).send('Failed to Create Item');

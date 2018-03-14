@@ -3,65 +3,93 @@
 
 <head>
 
-    <!-- <link rel="stylesheet" type="text/css" href="./css/style.css" > -->
+  <!-- <link rel="stylesheet" type="text/css" href="./css/style.css" > -->
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-    <title>
-        Item Creation
-    </title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <title>
+    Item Creation
+  </title>
 
 </head>
 
 <body>
   <%if(admin){%>
-  <%- include('admin_header') -%>
-  <%}else{%>
-    <%- include('header') -%>
-  <%}%>
+    <%- include('admin_header') -%>
+    <%}else{%>
+      <%- include('header') -%>
+      <%}%>
 
 
-  <h2 class="display-4">Item Report</h2>
-
-  <table class="table table-hover table-dark">
-      <thead>
-        <tr>
-            <% if (admin) { %>
-              <th>Actions</th>
-            <%} %>
-            <th scope="col">Item Number</th>
-            <th scope="col">Item Name</th>
-            <th scope="col">Package</th>
-            <th scope="col">Category</th>
-            <th scope="col">Fair Market Value</th>
-            <th scope="col">Item Description</th>
-            <th scope="col">Donor</th>
-            <th scope="col">Item Restriction</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for (var i in items){%>
-          <tr>
-              <% if(admin){ %>
-                <td><a href='/api/items/<%=items[i]._id%>'><button>Edit</button></a>|<a href='/api/remove_item/<%=items[i]._id%>'><button>Delete</button></a></td>
-              <%}%>
-              <td><%= items[i]._id%></td>
-              <td><%= items[i].name%></td>
-              <td><%= items[i]._package%></td>
-              <td><%= items[i]._category%></td>
-              <td><%= items[i].value%></td>
-              <td><%= items[i].description%></td>
-              <td><%= items[i].donor%></td>
-              <td><%= items[i].restrictions%></td>
-          </tr>
+      <input type='search' id='keyword' placeholder="Keyword Search">
+      <select name='category' id='category'>
+        <% for(var c in categories) {%>
+          <option value="<%=categories[c].name%>"><%=categories[c].name%></option>
         <%}%>
-      </tbody>
-  </table>
+        <option value="">Reset</option>
+      </select>
+      <div class="container">
+        <h1 class="my-2">Item Report</h1>
+        <div class="table-responsive-md ">
+          <table class="table table-striped table-bordered">
+            <thead >
+              <tr>
+                <% if (admin) { %>
+                  <th scope="col">Actions</th>
+                  <%} %>
+                  <th scope="col">Item Number</th>
+                  <th scope="col">Item Name</th>
+                  <th scope="col">Package</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Fair Market Value</th>
+                  <th scope="col">Item Description</th>
+                  <th scope="col">Donor</th>
+                  <th scope="col">Item Restriction</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for (var i in items){%>
 
-</body>
+                  <tr class="itemRow">
+                    <% if(admin){ %>
+                      <td><a href='/api/items/<%=items[i]._id%>'><button>Edit</button></a>|<a href='/api/remove_item/<%=items[i]._id%>'><button>Delete</button></a></td>
+                      <%}%>
+                      <td><%= items[i]._id%></td>
+                      <td><%= items[i].name%></td>
+                      <% if (items[i].packaged) {%>
+                        <td> <a href="/api/packages/<%= items[i]._package._id%>"> <%= items[i]._package.name%></a></td>
+                      <%}else{%>
+                        <td></td>
+                      <%}%>
+                      <td><%= items[i]._category%></td>
+                      <td><%= items[i].value%></td>
+                      <td><%= items[i].description%></td>
+                      <td><%= items[i].donor%></td>
+                      <td><%= items[i].restrictions%></td>
+                    </tr>
+                    <%}%>
+                  </tbody>
+                </table>
+              <script type="text/javascript">
+              $("#keyword").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $(".itemRow").filter(function() {
+                  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                  });
+              });
 
-</html>
+            $("select[name='category']").change( function() {
+                var value = $(this).val().toLowerCase();
+                $(".itemRow").filter(function(){
+                  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                })
+            });
+              </script>
+          </body>
+        </html>

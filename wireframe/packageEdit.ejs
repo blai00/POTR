@@ -2,7 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>package edeting</title>
+    <title>package editing</title>
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/additional-methods.min.js"></script>
   </head>
   <body>
     <script>
@@ -16,10 +19,10 @@
       <%- include('header') -%>
     <%}%>
     <h3>Edit Package</h3>
-    <form class="" action="/api/packages/<%=package._id%>" method="post">
-      <input type="text" name="packageName" value="<%=package.name%>">
-      <textarea name="packageDescription" rows="8" cols="40" value='<%=package.description%>'><%=package.description%></textarea>
-      <select class="" name="category" >
+    <form id='packageForm' action="/api/packages/<%=package._id%>" method="post">
+      <input type="text" id='packageName' name="packageName" value="<%=package.name%>">
+      <textarea id='packageDescription' name="packageDescription" rows="8" cols="40" value='<%=package.description%>'><%=package.description%></textarea>
+      <select id='category' name="category" >
         <option value="<%=package._category%>" ><%=package._category%></option>
         <% for (var c in categories){%>
           <%if(package._category != categories[c]){%>
@@ -30,8 +33,8 @@
           <%}%>
         <%}%>
       </select>
-      <input type="number" name="openingBid" value="<%=package.value%>">
-      <input type="number" name="increments" value="<%=package.amount%>">
+      <input type="number" id='openingBid' name="openingBid" value="<%=package.value%>">
+      <input type="number" id='increments' name="increments" value="<%=package.amount%>">
 
       <!-- need a read only feild with the current number selected -->
       <script type="text/javascript">
@@ -68,5 +71,33 @@
       <input readonly id="totalValue" type="number" name="totalValue" value="<%=total%>">
       <input type="submit" name="submit" value="submit">
     </form>
+    <script>
+      var validator = $("#packageForm").validate({
+      
+      rules: {
+
+        packageName: {
+          required: true,
+          minlength: 4
+        },
+        category: {
+          required: true
+        },
+        openingBid:{
+          required: true,
+          number: true
+        },
+        packageDescription: {
+          required: true,
+          minlength: 4
+        },
+        increments: {
+          required: true,
+          step: 5
+        }
+      }
+    });
+    validator.form();
+    </script>
   </body>
 </html>

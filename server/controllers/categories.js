@@ -18,10 +18,11 @@ function CategoriesController(){
 	    	if(err) {
 	      		console.log(err);
 	    	}
-	    	else {
-					  const admin = req.session.admin;
-	        	res.json({admin: admin, categories: categories});
-	        }
+	    	else if(req.session.admin) {
+	        	res.render('categories', {admin: req.session.admin, categories: categories, userName: req.session.userName});
+	        } else{
+				res.redirect('/api/packages')
+			}
         })  // ends Item.find
 
 	}; // ends this.index
@@ -33,7 +34,7 @@ function CategoriesController(){
 	this.create = function(req,res){
 		console.log('CategoriesController create');
 
-	    Category.create({name: req.body.category},  function(err, result){
+	    Category.create({name: req.body.name},  function(err, result){
 
 
 	      if(err){
@@ -47,7 +48,7 @@ function CategoriesController(){
 	    		}
 	    		else {
 
-	        	res.json(categories);
+	        	res.redirect('/api/categories');
 	        }
         })
 	      }

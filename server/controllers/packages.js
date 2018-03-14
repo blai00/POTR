@@ -5,29 +5,57 @@ var mongoose = require('mongoose'),
 	User = require('../models/user.js');
 var ObjectId = require('mongodb').ObjectId;
 
-
-
 function PackagesController(){
 
 	this.index = function(req,res){
+		// maybe embed both (user and package find) in category to make it synchronous
 		console.log('PackagesController index');
-
+		var categoryArray = []
+		var user
 		//Joey & Brandon: Currently halting "_bids" populate call, as this will be embedded when db is refactored
 
-		Package.find({}).populate("_items").exec(function(err, packages) {
-
-				// This is the method that finds all of the packages from the database
-				if(err) {
-						console.log('Package Index Error');
-						res.status(500).send('Failed to Load Packages');
+		Category.find({}, function(err, categories) {
+			if(err) {
+					console.log(err);
+					//res.status(500).send('Failed to Load Items');
+			}
+			else {
+				for(c in categories){
+					categoryArray.push(categories[c].name);
 				}
-				else {
-						//res.json({packages: packages, admin:req.session.admin});
-
-						res.render('packages', {packages: packages, admin: req.session.admin, userName: req.session.userName})
-
+				User.findOne({userName:req.session.userName}, function(err, result){
+					if(err){
+						console.log(err)
+					}else{
+						user = result
+						Package.find({}).populate("_items").sort({priority: 'descending'}).exec(function(err, packages) {
+											// This is the method that finds all of the packages from the database
+							if(err) {
+									console.log('Package Index Error');
+									res.status(500).send('Failed to Load Packages');
+							}else {
+									console.log('this is user again', user)
+									var featured = [];
+									var nonfeatured = [];
+									for (var i = 0; i < packages.length; i++){
+										if(packages[i].featured === true){
+											featured.push(packages[i]);
+										}
+										else{
+											nonfeatured.push(packages[i]);
+										}
+									}
+									res.render('packages', {packages: packages, admin: req.session.admin, userName: req.session.userName, user:user, categories: categoryArray, featured: featured, nonfeatured: nonfeatured})
+							}
+						})
 					}
-				})  // ends Package.find
+
+				})
+
+			}
+		})
+
+		 // ends Package.find
 
 	};
 
@@ -126,13 +154,14 @@ this.new = function(req,res){
 
 		if (req.body.selectedItems.length == 0){
           console.log('reached empty item list')
-          return res.json(false)
+		  return res.json(false)
+		  //frontend validation / response if no items selected
         }
 
 
         Package.create({name: req.body.packageName, _items: req.body.selectedItems, description: req.body.packageDescription,
 	    	value: req.body.totalValue, bid_increment: req.body.increments, _category: req.body.category,
-			bid: [], amount: req.body.openingBid
+			bid: [], amount: req.body.openingBid, priority: req.body.priority
 			},
 	    	function(err, package){
 
@@ -170,16 +199,32 @@ this.new = function(req,res){
 	this.show = function(req,res){
 		console.log('PackagesController show');
 		// sending ID by url or in req.body????????????????
-		Package.findById(req.params.id).populate("_items").exec(function(err,result){
+		var user
+		User.findOne({userName:req.session.userName}, function(err, result){
 			if(err){
-				console.log(err);
+				console.log(err)
+			}else{
+				user = result
+				Package.findById(req.params.id).populate("_items").exec(function(err,package){
+					if(err){
+						console.log(err);
+					}
+					else{
+						// res.json({packages: result});
+						console.log(package)
+						var our_bids = false
+						var lastBid = package.amount
+						if(package.bids.length > 0){
+							our_bids = true;
+							lastBid = package.bids[package.bids.length -1 ].bidAmount
+						}
+						res.render('package_show',{package:package, userName: req.session.userName, admin: req.session.admin, user:user, ourBids: our_bids, lastBid: lastBid})
+					}
+				})
 			}
-			else{
-				// res.json({packages: result});
-				console.log(result)
-				res.render('package_show',{package:result, userName: req.session.userName, admin: req.session.admin})
-			}
+
 		})
+
 	};
 
 	this.update = function(req,res){
@@ -191,7 +236,19 @@ this.new = function(req,res){
 		    }
 
 		    else {
+
 				console.log("update pacakge");
+						Item.find({_id: package._items}, function(err, items) {
+							if (err) {
+								console.log(err);
+							}else{
+								for (var i = 0; i < items.length; i++) {
+									items[i].packaged = false;
+									items[i]._package = null;
+									items[i].save()
+								}
+							}
+						})
 		        // Update each attribute with any possible attribute that may have been submitted in the body of the request
 		        // If that attribute isn't in the request body, default back to whatever it was before.
 		        package.name = req.body.packageName || package.name;
@@ -258,41 +315,72 @@ this.new = function(req,res){
 
 		    					}
 
-		            	res.json(package);
+		            	res.redirect('/api/packages/' + package._id );
 		            }
 		        });
 		    }
 		});
 	}  // end of this.update();
 
-	this.get_selected = function(req, res){
-		Package.find({_category:req.body.category}, function(err, result){
-			if(err){
-				console.log(err)
-			}else{
-				res.json(result)
-			}
-		})
-	},
+	// old category filtering
+	// this.get_selected = function(req, res){
+	// 	Package.find({_category:req.body.category}, function(err, result){
+	// 		if(err){
+	// 			console.log(err)
+	// 		}else{
+	// 			res.json(result)
+	// 		}
+	// 	})
+	// },
 
 	//removing a package from the DB
 	this.remove_package = function(req, res){
+		console.log('in remove_package')
 		Package.findOne({_id: req.params.id}, function(err, result){
 			if(err){
 				console.log(err)
 			}else{
+				console.log('this is result',result)
+				for(var j = 0; j < result.bids.length; j++){
+					console.log('this is j', j)
+					User.findOne({userName: result.bids[j].name}, function(err, user){
+						if(err){
+							console.log(err)
+						}else{
+							console.log("found_user", user)
+							for(var k= 0; k< user._packages.length; k++ ){
+								console.log("this is result", result)
+								if(result._id === user._packages[k]){
+
+									user._packages.splice(k,1)
+								}
+							}
+							user.save(function(err,result){
+								if(err){
+
+									console.log(err)
+								}else{
+									console.log("JOEY")
+								}
+							})
+						}
+					})
+				}
 				for(var i = 0; i < result._items.length; i++){
+					console.log('item_update')
 					Item.update({_id: result._items[i]}, {$set: {packaged: false, _package: null}}, function(err, result){
 						if(err){
 							console.log(err)
 						}
 					});
 				}
-				Package.remove({_id: req.params.id}, function(err, result){
+
+
+				Package.remove({_id: req.params.id}, function(err, package){
 					if(err){
 						console.log(err)
 					}else{
-						res.json(result);
+						res.redirect('/api/packages');
 					}
 				})
 			}
@@ -300,10 +388,45 @@ this.new = function(req,res){
 		})
 
 	}
+	this.featured = function(req, res) {
+		Package.findById(req.params.id, function(err, package) {
+			if(err){
+				console.log(err);
+			}else if (package.featured === true) {
+				package.featured = false;
+			}else{
+				package.featured = true;
+			}
+			package.save()
+			res.redirect('/api/packages')
+		})
+	}
+	//cancels last bid
+	this.cancel_bid = function(req,res){
+		Package.findById(req.params.id, function(err,package){
+			if(err){
+				console.log(err)
+			}else{
+				var bid	= package.bids[package.bids.length - 1]
+				//console.log('before if statement' + package)
+				if(bid.name === req.session.userName){
+					//console.log('this is the bid' + bid)
+					package.bids.pop()
+					package.save()
+					//console.log('this is the package' + package)
 
-	// Item.update({_id: package._items[i]}, { $set: { _package: package._id, packaged: true}}
+					//in case client want package not to show on user page
+					//maybe they want to bid again on the package later
+					//User.findOne({userName: req.session.userName}, function(err, user){
+
+					//})
+				}
+				res.redirect('/api/users/' + req.session.userName)
+			}
+		})
+	}
+
 
 }
-
 
 module.exports = new PackagesController();

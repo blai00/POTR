@@ -5,23 +5,35 @@
     <title>login</title>
   </head>
   <body>
+
+
     <%if(admin){%>
     <%- include('admin_header') -%>
     <%}else{%>
       <%- include('header') -%>
     <%}%>
-    <form class="" action="/api/users/login" method="post">
-    <p>
-      <label>Username:&nbsp
-        <input placeholder="Username" type="text" name="userName">
-      </label>
-    </p>
-    <p>
-      <label>Password:&nbsp
-        <input placeholder="Password" type="password" name="password">
-      </label>
-    </p>
-    <input type="submit" name="submit" value="submit">
-    </form>
+    <div class="container">
+      <div class="well my-4">
+        <form class="ml-0" action="/api/users/login" method="post">
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label">User Name</label>
+            <div class="col-sm-10">
+              <input placeholder="User Name" type="text" name="userName" id="userName" class="form-control" value required>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Password</label>
+            <div class="col-sm-10">
+              <input placeholder="Password" type="password" name="password" id="password" class="form-control" value required>
+            </div>
+          </div>
+
+          <input type="submit" name="submit" value="submit" class="btn btn-default">
+
+        </form>
+
+      </div>
+    </div>
   </body>
 </html>

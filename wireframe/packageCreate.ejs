@@ -3,41 +3,54 @@
   <head>
     <meta charset="utf-8">
     <title>package creation</title>
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/additional-methods.min.js"></script>
   </head>
   <body>
-    <script>
+    <!-- <script>
       function test(){
         alert('hello')
       }
-    </script>
+    </script> -->
     <%if(admin){%>
     <%- include('admin_header') -%>
     <%}else{%>
       <%- include('header') -%>
     <%}%>
     <h3>create package</h3>
-    <form class="" action="/api/packages" method="post">
-      <input type="text" name="packageName" placeholder="packageName">
-      <textarea name="packageDescription" rows="8" cols="40" placeholder="Package description"></textarea>
-      <select class="" name="category" >
+
+    <form id="packageForm" action="/api/packages" method="post">
+      <input type="text" name="packageName" id="packageName" placeholder="packageName">
+      <textarea name="packageDescription" id="packageDescription" rows="8" cols="40" placeholder="Package description"></textarea>
+      <input id='priority' type='number' name='priority' placeholder='Priority'>
+      <select class="" name="category" id="category" >
+
         <% for (var c in categories){%>
           <!-- add radio and jquery to make only one catagory option apear
         or Make a seperate page to creat catagories -->
           <option value="<%=categories[c].name%>"><%=categories[c].name%></option>
         <%}%>
       </select>
-      <input type="number" name="openingBid" placeholder="Opening Bid">
-      <input type="number" name="increments" placeholder="incrament">
+
+      <input type="number" name="openingBid" id="openingBid" placeholder="Opening Bid">
+      <input type="number" name="increments" id="increments" placeholder="increment">
 
       <!-- need a read only feild with the current number selected -->
-      <script type="text/javascript">
+      <%for (var i in items){%>
+        <%if(!items[i].packaged){%>
+      <%=items[i].name%>
+      <input type="checkbox" name="selectedItems" id="<%=items[i]._id%>" required value="<%=items[i]._id%>" onChange='totalAdd(<%=items[i].value%>, <%=items[i]._id%>)'>
+      <%}%>
+      <%}%>
+      <input readonly id="totalValue" type="number" name="totalValue" value="<%=total%>">
+      <input type="submit" name="submit" value="Submit">
+    </form>
+    <script>
       var total = 0;
       var checkedItems = {};
-
        totalAdd = function(value, id){
-
         var checkbox = document.getElementById(id);
-
         if (checkbox.checked === true){
           total += value
           console.log("total is", total);
@@ -51,16 +64,38 @@
         }
         document.getElementById('totalValue').value = total
       }
-      </script>
-      <%for (var i in items){%>
-        <%if(!items[i].packaged){%>
-      <%=items[i].name%>
-
-      <input type="checkbox" name="selectedItems" id="<%=items[i]._id%>" value="<%=items[i]._id%>" onChange='totalAdd(<%=items[i].value%>, <%=items[i]._id%>)'>
-      <%}%>
-      <%}%>
-      <input readonly id="totalValue" type="number" name="totalValue" value="<%=total%>">
-      <input type="submit" name="submit" value="submit">
-    </form>
+    var validator = $("#packageForm").validate({
+      rules: {
+        packageName: {
+          required: true,
+          minlength: 4
+        },
+        category: {
+          required: true
+        },
+        openingBid:{
+          required: true,
+          number: true,
+          min: 0
+        },
+        packageDescription: {
+          required: true,
+          minlength: 4
+        },
+        increments: {
+          required: true,
+          number: true,
+          min: 5,
+          step: 5
+        },
+        priority: {
+          required: true,
+          number: true,
+          min: 0
+        }
+      }
+    });
+    validator.form();
+    </script>
   </body>
 </html>

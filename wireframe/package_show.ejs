@@ -4,18 +4,24 @@
     <meta charset="utf-8">
 		<title>Package Show</title>
 		<script src="/socket.io/socket.io.js"></script>
-		<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+
 		<script type='text/javascript'>
 			var socket = io.connect('http://localhost:8000');
+      var customPlaceholder = parseInt(<%=lastBid%>);
 
 			$(document).on('submit', function(){
-					console.log("Before receiving from server, " + $('#bid_amount')[0].defaultValue)
-					socket.emit('msg_sent', {packId: '<%= package._id %>', bid: parseInt($('#bid_amount')[0].defaultValue), userName: '<%= userName %>' })
+
+					console.log("Before receiving from server, " + $('#bid_amount')[0].value)
+					socket.emit('msg_sent', {packId: '<%= package._id %>', bid: parseInt($('#bid_amount')[0].value), userName: '<%= userName %>' })
 					event.preventDefault();
 					// replace replaceWith val maybe??
 					socket.on("serverTalksBack", function(data){
 						$('#currentBid').text("Current Bid: " + data.bid)
 						$('#bid_amount').replaceWith("<input id='bid_amount' readonly value='" + String(parseInt(data.bid) + <%= parseInt(package.bid_increment) %>)+" ' >")
+            customPlaceholder = data.bid;
 					})
 				})
 		</script>
@@ -53,9 +59,12 @@
 			<% if (!userName) {%>
 				<a href='/api/users_login'>Login</a>
 			<%}else{%>
-				<input type='submit' value='Place Bid'>
-			<%}%>
+				<input id="submitButton" type='submit' value='Place Bid'>
+
 			</form>
+        <button type="button" name="Custom" id="custom">Custom Bid</button>
+      <a href="/users/interested/<%= package._id %>"><button type="button" name="interested">Interested?</button></a>
+      <%}%>
 		</div>
 		<div>
 			<h5>Items In Package</h5>
@@ -63,6 +72,48 @@
 				<p>Item Name: <%= package._items[i].name %> donated by: <%= package._items[i].donor %></p>
 			<%}%>
 		</div>
+    <script>
 
-		<!-- add link for back to all packages -->
+      $('#custom').click(function () {
+
+        if ($('#bid_amount').attr('readonly') === 'readonly'){
+
+          if (<%=ourBids%>===true) {
+
+          $('#bid_amount').attr({'readonly': false,
+                                  'placeholder': customPlaceholder + <%=package.bid_increment %> +' or higer'});
+          $('#bid_amount').val(null);
+        }else{
+          $('#bid_amount').attr({'readonly': false,
+                                  'placeholder': customPlaceholder + ' or higer'});
+          $('#bid_amount').val(null);
+              }
+        }
+        else{
+          if (<%=ourBids%>===true) {
+            $('#bid_amount').attr({'readonly': 'readonly',
+                                  'placeholder': customPlaceholder + <%=package.bid_increment %> +' or higer'});
+            $('#bid_amount').val(customPlaceholder + <%=package.bid_increment %>)
+        }else{
+          $('#bid_amount').attr({'readonly': 'readonly',
+                              'placeholder': customPlaceholder + ' or higer'});
+
+          $('#bid_amount').val(customPlaceholder)
+        }
+      }
+        $(this).text($(this).text() == 'Preset Bid' ? 'Custom Bid' : 'Preset Bid')
+      })
+
+            $("#submitButton").click(function(){
+              if($("#bid_amount").val() < <%= package.amount%>){
+                alert("Tali does not like alerts")
+                return false;
+              }else if ($("#bid_amount").val() < <%= lastBid + package.bid_increment %> && <%=ourBids%> === true) {
+                alert("Tali does not like alerts")
+                return false;
+              }
+
+            })
+    </script>
+
 	</body>

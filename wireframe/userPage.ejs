@@ -13,24 +13,33 @@
     <h3><%=user.userName%>'s Page</h3>
     <table>
       <thead>
-        <th>package Name</th>
+        <th>Package Name</th>
         <th>Who's Winning</th>
+        <th>Interested</th>
       </thead>
       <tbody>
+        
         <%for(let i =0; i<packages.length; i++){%>
           <tr>
+          <% if(packages[i]) {%>
           <td><a href="/api/packages/<%=packages[i]._id%>"><%=packages[i].name%></a></td>
-          <%if(packages[i].bids[packages[i].bids.length-1].name === userName){%>
-            <td>You!!!</td>
-          <%}else{%>
-          <td><%=packages[i].bids[packages[i].bids.length-1].name%></td>
+          <% if(packages[i].bids.length > 0) {%>
+          <%if(packages[i].bids[packages[i].bids.length-1].name == user.userName){%>
+               <td>You!!!</td>
+              <%}else{%>
+              <td><%=packages[i].bids[packages[i].bids.length-1].name%></td>
+              <%}%>
+            <%}%>
           <%}%>
+          <td><a href="/users/uninterested/<%=packages[i]._id%>"><button type="button" name="uninterested">No longer Interested</button></a></td>
 
 
           </tr>
           <%}%>
-
+        
       </tbody>
     </table>
+    
+    
   </body>
 </html>

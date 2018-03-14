@@ -5,52 +5,63 @@
 
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 <!-- =================================================================== -->
 
-<!-- Nav-bar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+<header>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li><a href="/api/items">Catalog</a> | </li>
-      <li><a href="/api/packages">Packages/Bids</a> | </li>
-        <li><a href='/api/users'>All Users</a> | </li>
-        <li><a href="/api/items/new"> Add Item</a> | </li>
-        <li><a href="/api/packages/new"> Add Package</a> | </li>
-        <li><a href='/api/users/logout'>Logout</a></li>
-      <!-- <li class="nav-item">
-        <a class="nav-link" href="#">Cart</a>
-      </li> -->
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-<!-- fix the route that takes it to the '#' and it actually should not be there in full size screens but only mobile displays -->
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active ">
+              <h3><a class="nav-link" href="/api/items">Catalog</a></h3>
+            </li>
+            <li>
+              <h3><a class="nav-link" href="/api/packages">Packages/Bids</a></h3>
+            </li>
 
-      <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Dropdown
-      </a>
-      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-        <a class="dropdown-item" href="#">Action</a>
-        <a class="dropdown-item" href="#">Another action</a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="#">Something else here</a>
+            <li>
+              <h3><a class="nav-link" href='/api/users'>All Users</a> </h3>
+            </li>
+
+            <li>
+              <h3><a class="nav-link" href='/api/categories'>Add Category</a></h3>
+            </li>
+
+            <li>
+              <h3><a class="nav-link" href="/api/items/new"> Add Item</a> </h3>
+            </li>
+
+            <li>
+              <h3><a class="nav-link" href="/api/packages/new">Add Package</a></h3>
+            </li>
+          </ul>
+          <!-- right navbar -->
+          <ul class="nav navbar-nav navbar-right">
+            <%if(userName){%>
+              <h3>
+                <a class="nav-link" href="/api/users/<%=userName%>">Hello, <%=userName%> | </a>
+              </h3>
+              <h3>
+                <a class="nav-link" href='/api/users/logout'>Logout</a>
+              </h3>
+            <%}else{%>
+              <h3>
+                <a class="nav-link" href='/api/users_login'>Login</a>
+              </h3>
+              <h3>
+                <a class="nav-link" href="/users/register">Register </a>
+              </h3>
+            <%}%>
+          </ul>
+        </div>
       </div>
-    </li>
-
-    </ul>
-
-  <!-- login / logout -->
-
-
-  </div>
-  <%if(userName){%>
-  <a href="/api/users/<%=userName%>">Hello, <%=userName%></a>  |
-  <%}else{%>
-    <p>Welcome!  | </p>
-    <%}%>
-    <a href='/api/users/logout'>Logout</a>
-
-</nav>
+    </nav>
+</header>

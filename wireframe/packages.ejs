@@ -12,34 +12,130 @@
 
 			$(document).ready(function(){
 					socket.on("serverTalksBack", function(data){
-						$('#currentBid').text("Current Bid: " + data.bid)
-					})
-				})
+            $('#currentBid').text("Current Bid: " + data.bid)
+
+          })
+
+        $("#keyword").on("keyup", function() {
+          var value = $(this).val().toLowerCase();
+          $(".package").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+
+      $("select[name='category']").change( function() {
+          var value = $(this).val().toLowerCase();
+          $(".package").filter(function(){
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+          })
+      });
+      $("#noBids").click(function() {
+        $(".bids").toggle();
+        $(this).text($(this).text() == 'Show All' ? 'No Bids Yet' : 'Show All')
+      });
+    })
+
 		</script>
 </head>
 
 <body>
+
   <%if(admin){%>
   <%- include('admin_header') -%>
   <%}else{%>
     <%- include('header') -%>
   <%}%>
   <h2>Packages/Bids</h2>
-<% for (var p in packages){%>
-<div class="package">
+  <input type='search' id='keyword' placeholder="Keyword Search">
+  <select name='category' id='category'>
+    <% for(var c in categories) {%>
+      <option value="<%=categories[c]%>"><%=categories[c]%></option>
+    <%}%>
+  </select>
+  <button type="button" id="noBids" name="button">No bids yet</button>
+
+<h2>Featured Packages</h2>
+<% for (var f in featured){%>
+  <%if(featured[f].bids.length>0){%>
+<div class="package bids">
+  <%}else{%>
+    <div class="package empty">
+  <%}%>
   <img src="/no-image.png" alt="img">
   <br>
-  <a href="/api/packages/<%=packages[p]._id%>"><%=packages[p].name%></a>
-  <p><b>Category:</b> <%=packages[p]._category%></p>
-  <p><b>STARTING BID:</b> <%=packages[p].amount%></p>
-  <%if(packages[p].bids[packages[p].bids.length-1]){%>
-  <p id='currentBid'><b>Current Bid:</b> <%=packages[p].bids[packages[p].bids.length-1].bidAmount%> (By: <%= packages[p].bids[packages[p].bids.length-1].name%>)</p>
+  <a href="/api/packages/<%=featured[f]._id%>"><%=featured[f].name%></a>
+  <p><b>Category:</b> <%=featured[f]._category%></p>
+  <p><b>STARTING BID:</b> <%=featured[f].amount%></p>
+  <%if(featured[f].bids[featured[f].bids.length-1]){%>
+  <p id='currentBid'><b>Current Bid:</b> <%=featured[f].bids[featured[f].bids.length-1].bidAmount%> (By: <%= featured[f].bids[featured[f].bids.length-1].name%>)</p>
   <%}else{%>
     <p><b>Current Bid:</b> None (By: Nobody)</p>
   <%}%>
+  <%if(userName){%>
+    <% var flag = false %>
+    <% for(var i = 0; i < user._packages.length; i++){ %>
+    <% if(featured[f]._id == user._packages[i]) {%>
+
+      <a href="/users/uninterested/<%= featured[f]._id %>"><button type="button" name="interested">No Longer Interested?</button></a>
+      <% flag = true %>
+      <% break %>
+      <% } %>
+      <%}%>
+      <% if(flag === false) {%>
+      <a href="/users/interested/<%= featured[f]._id %>"><button type="button" name="interested">Interested?</button></a>
+      <%}%>
+  <%}%>
   <% if (admin){ %>
-   <a href='/packages/<%=packages[p]._id%>'><button>Edit</button></a>
-   <a href='/api/remove_package/<%=packages[p]._id %>'><button>Delete</button></a>
+   <a href='/packages/<%=featured[f]._id%>'><button>Edit</button></a>
+   <a href='/api/remove_package/<%=featured[f]._id %>'><button>Delete</button></a>
+   <%if(featured[f].featured === true){%>
+     <a href="/packages/featured/<%=featured[f]._id%>"><button>Unfeature</button></a>
+   <%}else{%>
+   <a href="/packages/featured/<%=featured[f]._id%>"><button>Feature</button></a>
+  <%}%>
+  <%}%>
+</div>
+<% }%>
+
+<h2>Other Packages</h2>
+<% for (var n in nonfeatured){%>
+  <%if(nonfeatured[n].bids.length>0){%>
+<div class="package bids">
+  <%}else{%>
+    <div class="package empty">
+  <%}%>
+  <img src="/no-image.png" alt="img">
+  <br>
+  <a href="/api/packages/<%=nonfeatured[n]._id%>"><%=nonfeatured[n].name%></a>
+  <p><b>Category:</b> <%=nonfeatured[n]._category%></p>
+  <p><b>STARTING BID:</b> <%=nonfeatured[n].amount%></p>
+  <%if(nonfeatured[n].bids[nonfeatured[n].bids.length-1]){%>
+  <p id='currentBid'><b>Current Bid:</b> <%=nonfeatured[n].bids[nonfeatured[n].bids.length-1].bidAmount%> (By: <%= nonfeatured[n].bids[nonfeatured[n].bids.length-1].name%>)</p>
+  <%}else{%>
+    <p><b>Current Bid:</b> None (By: Nobody)</p>
+  <%}%>
+  <%if(userName){%>
+    <% var flag = false %>
+    <% for(var i = 0; i < user._packages.length; i++){ %>
+    <% if(nonfeatured[n]._id == user._packages[i]) {%>
+
+      <a href="/users/uninterested/<%= nonfeatured[n]._id %>"><button type="button" name="interested">No Longer Interested?</button></a>
+      <% flag = true %>
+      <% break %>
+      <% } %>
+      <%}%>
+      <% if(flag === false) {%>
+      <a href="/users/interested/<%= nonfeatured[n]._id %>"><button type="button" name="interested">Interested?</button></a>
+      <%}%>
+  <%}%>
+  <% if (admin){ %>
+   <a href='/packages/<%=nonfeatured[n]._id%>'><button>Edit</button></a>
+   <a href='/api/remove_package/<%=nonfeatured[n]._id %>'><button>Delete</button></a>
+   <%if(nonfeatured[n].featured === true){%>
+     <a href="/packages/featured/<%=nonfeatured[n]._id%>"><button>Unfeature</button></a>
+   <%}else{%>
+   <a href="/packages/featured/<%=nonfeatured[n]._id%>"><button>Feature</button></a>
+  <%}%>
   <%}%>
 </div>
 <% }%>

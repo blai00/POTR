@@ -15,6 +15,7 @@ var itemSchema = new Schema({
  restrictions: {type: String},
  value: Number,
  packaged: Boolean,
+ priority: {type: Number, required: true, default: 0},
 
  photo: {type: String},
  _package: {type: Number, ref: 'Package'}
