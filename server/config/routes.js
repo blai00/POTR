@@ -15,6 +15,12 @@ module.exports = function(app) {
 	// get the Login/Registration screen.  This is our root route //
 	// ITEMS //
 	// Renders all ites page
+
+app.get('/', function (req,res) {
+	res.redirect('/api/packages')
+})
+
+
 	app.get('/api/items', function(req,res){
 		items.index(req,res)});
 	// get the new item form
@@ -150,7 +156,7 @@ module.exports = function(app) {
 		users.uninterested(req, res)
 	})
 
-	
+
 
 
 		// this is CATCH ALL ROUTS server side patch. To solve production error, when fron-end rout doesn't work properly

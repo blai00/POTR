@@ -9,11 +9,11 @@
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 
 		<script type='text/javascript'>
-			var socket = io.connect('http://localhost:8000');
+			var socket = io.connect('https://0056c018.ngrok.io');
       		var customPlaceholder = parseInt(<%=lastBid%>);
 			$(document).ready(function(){
 				$('#submitButton').click( function(){
-					socket.emit('msg_sent', {packId: '<%= package._id %>', bid: parseInt($('#bid_amount')[0].value), userName: '<%= userName %>' })
+					socket.broadcast.emit('msg_sent', {packId: '<%= package._id %>', bid: parseInt($('#bid_amount')[0].value), userName: '<%= userName %>' })
 					event.preventDefault();
 					// replace replaceWith val maybe??
 					socket.on("serverTalksBack", function(data){
@@ -68,7 +68,7 @@
         	<button type="button" name="Custom" id="custom">Custom Bid</button>
       		<a href="/users/interested/<%= package._id %>"><button type="button" name="interested">Interested?</button></a>
 			<%}%>
-			 
+
 			<% if (admin === true) { %>
 				<form action="/packages/cancelbid/<%=package._id %>" method='POST'>
 					<input type='text' value='' placeholder='username of bidder' name='user'>
@@ -125,7 +125,7 @@
             }
 
 		})
-		
+
 		$('#cancelBid').click(function(){
 			var cancelBidConfirm = window.confirm('Are you sure you want to cancel' )
 			if(cancelBidConfirm === false){
