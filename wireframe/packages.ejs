@@ -8,12 +8,11 @@
     <script src="/socket.io/socket.io.js"></script>
 		<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script type='text/javascript'>
-			var socket = io.connect('https://0056c018.ngrok.io');
+			var socket = io.connect('https://7bfbcad6.ngrok.io');
 
 			$(document).ready(function(){
 					socket.on("serverTalksBack", function(data){
             $('#currentBid').text("Current Bid: " + data.bid)
-
           })
 
         $("#keyword").on("keyup", function() {

@@ -128,7 +128,6 @@ var io = require('socket.io').listen(server);
 
 
 io.sockets.on('connection', function(socket){
-
 // DEBUGGING INFO JUST TO MONITOR allBidsObject is healty
 console.log("/".repeat(20) + " allBidsBigObj before socket logic " + "/".repeat(20));
 console.dir(allBidsBigObj); console.log("/".repeat(20));
@@ -272,6 +271,43 @@ console.log('data', data);
 
 
     })
+
+		socket.on("cancel_msg", function(data) {
+			console.log("data is", data)
+			if(data.admin){
+				Package.findById(data.packId, function(err,package){
+					if(err){
+						console.log(err)
+					}else{
+						var bid	= package.bids[package.bids.length - 1]
+					//console.log('before if statement' + package)
+					if(data.userName){
+					User.findOne({userName: data.userName}, function(err,user){
+						if(err){
+							console.log(err)
+						}else if(user){
+							console.log("user is", user)
+							if(bid.name === user.userName){
+								//console.log('this is the bid' + bid)
+								package.bids.pop()
+								package.save()
+								io.emit("serverTalksBack", {bid: package.bids[package.bids.length - 1].bidAmount, userName: package.bids[package.bids.length - 1].name})
+								//console.log('this is the package' + package)
+
+								//in case client want package not to show on user page
+								//maybe they want to bid again on the package later
+								//User.findOne({userName: req.session.userName}, function(err, user){
+
+								//})
+						}
+					}
+					})
+				}
+				}
+				}
+			)
+		}
+		})
 
     socket.on("page_refresh", function(data) {
       var uniqChatUpdateId = 'update_chat' + data.pId;
