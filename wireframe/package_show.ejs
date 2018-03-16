@@ -9,10 +9,13 @@
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 
 		<script type='text/javascript'>
-			var socket = io.connect('https://7bfbcad6.ngrok.io');
-      		var customPlaceholder = parseInt(<%=lastBid%>);
+			var socket = io.connect('https://0bc74b43.ngrok.io');
+      var customPlaceholder = parseInt(<%=lastBid%>);
+      var lastBidder = "<%=package.bids[package.bids.length - 1].name%>";
+      console.log("on page load, lastBidder is", lastBidder)
 			$(document).ready(function(){
         socket.on("serverTalksBack", function(data){
+          lastBidder = data.userName
           $('#currentBid').text("Current Bid: " + data.bid + " by: " + data.userName)
           $('#bid_amount').replaceWith("<input id='bid_amount' readonly value='" + String(parseInt(data.bid) + <%= parseInt(package.bid_increment) %>)+" ' >")
                 customPlaceholder = data.bid;
@@ -24,13 +27,6 @@
         })
 				$('#submitButton').click( function(){
 					socket.emit('msg_sent', {packId: '<%= package._id %>', bid: parseInt($('#bid_amount')[0].value), userName: '<%= userName %>' })
-					event.preventDefault();
-					// replace replaceWith val maybe??
-				})
-        $('#cancelBid').click( function(){
-          console.log("cancelBid button hit on frontend")
-          console.log("admin is", "<%=admin%>")
-					socket.emit('cancel_msg', {packId: '<%= package._id %>', userName: $("#user").val(), admin: "<%=admin%>" })
 					event.preventDefault();
 					// replace replaceWith val maybe??
 				})
@@ -80,7 +76,7 @@
 			<%}%>
 
 			<% if (admin === true) { %>
-				<form action="/packages/cancelbid/<%=package._id %>" method='POST'>
+				<form>
 					<input id = "user" type='text' value='' placeholder='username of bidder' name='user'>
 					<input id='cancelBid' type='submit' value='Delete Bid'>
 				</form>
@@ -137,10 +133,20 @@
 		})
 
 		$('#cancelBid').click(function(){
-			var cancelBidConfirm = window.confirm('Are you sure you want to cancel' )
-			if(cancelBidConfirm === false){
-				return false;
-			}
+      console.log("lastBidder is", lastBidder)
+      console.log("user.val is", $("#user").val())
+      console.log("conditional statement:", lastBidder === $("#user").val())
+      if (lastBidder != $("#user").val()){
+        alert("Name entered does not match highest bidder")
+        event.preventDefault();
+      }else{
+  			var cancelBidConfirm = window.confirm('Are you sure you want to cancel' )
+  			if(cancelBidConfirm === true){
+          socket.emit('cancel_msg', {packId: '<%= package._id %>', userName: $("#user").val(), admin: "<%=admin%>" })
+  			}else{
+          event.preventDefault();
+        }
+      }
 		})
     </script>
 

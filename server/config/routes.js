@@ -68,10 +68,7 @@ app.get('/', function (req,res) {
 	app.get('/api/remove_package/:id', function(req, res){
 		packages.remove_package(req, res)
 	})
-	//removes last bid on package
-	app.post('/packages/cancelbid/:id', function(req,res){
-		packages.cancel_bid(req,res)
-	})
+
 	app.get('/packages/featured/:id', function(req, res) {
 		packages.featured(req, res)
 	})
